@@ -26,7 +26,7 @@ extension NetworkManagerService {
         var request = URLRequest(url: url)
         request.httpMethod = endpoint.method.rawValue
         request.allHTTPHeaderFields = endpoint.header
-        print(url)
+
         if let body = endpoint.body {
             do {
                 let jsonData = try JSONSerialization.data(withJSONObject: body, options: [])
@@ -41,8 +41,6 @@ extension NetworkManagerService {
             guard let response = response as? HTTPURLResponse else {
                 return .failure(.noResponse)
             }
-
-            print(String(data: data, encoding: String.Encoding.utf8) ?? "")
 
             switch response.statusCode {
             case 200...299:
