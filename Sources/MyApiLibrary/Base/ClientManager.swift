@@ -7,11 +7,11 @@
 
 import Foundation
 
-protocol NetworkManagerService {
+public protocol NetworkManagerService {
     func sendApiRequest<T: Decodable>(endpoint: ApiEndpoint, responseModel: T.Type) async -> Result<T, RequestError>
 }
 extension NetworkManagerService {
-    func sendApiRequest<T: Decodable>(endpoint: ApiEndpoint, responseModel: T.Type) async -> Result<T, RequestError> {
+  public  func sendApiRequest<T: Decodable>(endpoint: ApiEndpoint, responseModel: T.Type) async -> Result<T, RequestError> {
 
         var urlComponents = URLComponents()
         urlComponents.scheme = endpoint.scheme
