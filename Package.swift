@@ -24,9 +24,7 @@ let package = Package(
         .target(
             name: "MyApiLibrary",
             dependencies: [],
-            path: "Sources"),
-        .testTarget(
-            name: "MyApiLibraryTests",
-            dependencies: ["MyApiLibrary"]),
+            path: "Sources")
+
     ]
 )
