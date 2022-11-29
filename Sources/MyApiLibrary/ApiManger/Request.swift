@@ -57,7 +57,7 @@ public enum HttpMethod{
     case delete
     case head
 
-    var name: String {
+    public var name: String {
         switch self {
         case .get: return "GET"
         case .put: return "PUT"
