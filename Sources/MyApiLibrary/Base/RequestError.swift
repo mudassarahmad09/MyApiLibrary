@@ -15,6 +15,7 @@ public enum RequestError: Error {
     case sessionExpried
     case unexpectedStatusCode
     case unknown
+    case noInternet
 
    public  var customMessage: String {
         switch self {
@@ -22,6 +23,8 @@ public enum RequestError: Error {
             return "Decode error"
         case .unauthorized(let reason):
             return reason ?? "Session expired"
+        case .noInternet:
+            return "No Internet Connection"
         default:
             return "Unknown error"
         }
