@@ -34,6 +34,7 @@ final class NetworkMonitor {
 
     private init() {
         monitor = NWPathMonitor()
+        startMonitoring()
     }
 
     func startMonitoring() {
