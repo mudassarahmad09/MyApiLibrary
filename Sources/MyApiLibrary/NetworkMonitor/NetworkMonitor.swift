@@ -8,7 +8,7 @@
 import Foundation
 import Network
 
-protocol NetworkCheckObserver: class {
+protocol NetworkCheckObserver: AnyObject {
     func statusDidChange(status: NWPath.Status)
 }
 

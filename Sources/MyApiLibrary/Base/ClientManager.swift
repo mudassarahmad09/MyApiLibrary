@@ -12,6 +12,7 @@ public protocol NetworkManagerService {
 }
 extension NetworkManagerService {
     public  func sendApiRequest<T: Decodable>(endpoint: ApiEndpoint, responseModel: T.Type) async -> Result<T, RequestError> {
+        
         if NetworkCheck.sharedInstance().currentStatus == .satisfied {
             var urlComponents = URLComponents()
             urlComponents.scheme = endpoint.scheme
