@@ -1,62 +1,46 @@
-//
-//  File.swift
-//  
-//
-//  Created by Mudassar Ahmad on 19/01/2023.
-//
-
 import Foundation
 import Network
 
-protocol NetworkCheckObserver: AnyObject {
-    func statusDidChange(status: NWPath.Status)
+extension Notification.Name {
+    static let connectivityStatus = Notification.Name(rawValue: "connectivityStatusChanged")
 }
 
-class NetworkCheck {
-    
-    struct NetworkChangeObservation {
-        weak var observer: NetworkCheckObserver?
+extension NWInterface.InterfaceType: CaseIterable {
+    public static var allCases: [NWInterface.InterfaceType] = [
+        .other,
+        .wifi,
+        .cellular,
+        .loopback,
+        .wiredEthernet
+    ]
+}
+
+final class NetworkMonitor {
+    static let shared = NetworkMonitor()
+
+    private let queue = DispatchQueue(label: "NetworkConnectivityMonitor")
+    private let monitor: NWPathMonitor
+
+    private(set) var isConnected = false
+    private(set) var isExpensive = false
+    private(set) var currentConnectionType: NWInterface.InterfaceType?
+
+    private init() {
+        monitor = NWPathMonitor()
     }
-    
-    private var monitor = NWPathMonitor()
-    private static let _sharedInstance = NetworkCheck()
-    private var observations = [ObjectIdentifier: NetworkChangeObservation]()
-    var currentStatus: NWPath.Status {
-        get {
-            return monitor.currentPath.status
+
+    func startMonitoring() {
+        monitor.pathUpdateHandler = { [weak self] path in
+            self?.isConnected = path.status != .unsatisfied
+            self?.isExpensive = path.isExpensive
+            self?.currentConnectionType = NWInterface.InterfaceType.allCases.filter { path.usesInterfaceType($0) }.first
+            
+            NotificationCenter.default.post(name: .connectivityStatus, object: nil)
         }
+        monitor.start(queue: queue)
     }
-    
-    class func sharedInstance() -> NetworkCheck {
-        return _sharedInstance
+
+    func stopMonitoring() {
+        monitor.cancel()
     }
-    
-    init() {
-        monitor.pathUpdateHandler = { [unowned self] path in
-            for (id, observations) in self.observations {
-                
-                //If any observer is nil, remove it from the list of observers
-                guard let observer = observations.observer else {
-                    self.observations.removeValue(forKey: id)
-                    continue
-                }
-                
-                DispatchQueue.main.async(execute: {
-                    observer.statusDidChange(status: path.status)
-                })
-            }
-        }
-        monitor.start(queue: DispatchQueue.global(qos: .background))
-    }
-    
-    func addObserver(observer: NetworkCheckObserver) {
-        let id = ObjectIdentifier(observer)
-        observations[id] = NetworkChangeObservation(observer: observer)
-    }
-    
-    func removeObserver(observer: NetworkCheckObserver) {
-        let id = ObjectIdentifier(observer)
-        observations.removeValue(forKey: id)
-    }
-    
 }
