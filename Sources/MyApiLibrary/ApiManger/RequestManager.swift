@@ -12,7 +12,7 @@ public protocol RequestManager{
 }
 extension RequestManager {
     public  func sendApiRequest<T: Decodable>(request: Request, responseModel: T.Type) async -> Result<T, RequestError> {
-        if NetworkMonitor.shared.isConnected {
+        if NetworkCheck.sharedInstance().currentStatus == .satisfied {
             do {
                 let (data, response) = try await URLSession.shared.data(for: request.urlRequest, delegate: nil)
                 guard let response = response as? HTTPURLResponse else {
