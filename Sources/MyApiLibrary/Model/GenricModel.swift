@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct GenricModel: Codable {
+struct GenricModel: Codable, Sendable {
     var statusCode: Int?
     var statusMessage: String?
     var success: Bool?
