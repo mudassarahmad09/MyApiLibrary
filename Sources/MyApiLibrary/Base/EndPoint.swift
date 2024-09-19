@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol ApiEndpoint {
+public protocol ApiEndpoint: Sendable {
     var scheme: String { get }
     var host: String { get }
     var path: String { get }

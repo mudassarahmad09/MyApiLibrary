@@ -7,7 +7,7 @@
 
 import Foundation
 
-public protocol RequestManager{
+public protocol RequestManager: Sendable {
     func sendApiRequest<T: Decodable>(request: Request, responseModel: T.Type) async -> Result<T, RequestError>
 }
 extension RequestManager {
